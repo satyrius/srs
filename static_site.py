@@ -40,7 +40,7 @@ root_bucket = template.add_resource(s3.Bucket(
         ErrorDocument=Ref(error_page),
     )
 ))
-root_bucket_arn = {'Fn::Join': ['', ['arn:aws:s3:::', Ref(root_bucket), '/*']]}
+root_bucket_arn = Join('', ['arn:aws:s3:::', Ref(root_bucket), '/*'])
 
 template.add_resource(s3.BucketPolicy(
     'RootBucketPolicy',
