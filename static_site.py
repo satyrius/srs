@@ -1,8 +1,10 @@
 from __future__ import print_function
 
 from troposphere import Parameter, Template
-from troposphere import Ref, GetAtt
-from troposphere import constants as c, s3, cloudfront
+from troposphere import Ref, GetAtt, Join
+from troposphere import constants as c, s3, cloudfront, route53
+
+CLOUDFRONT_HOSTED_ZONE_ID = 'Z2FDTNDATAQYW2'
 
 
 template = Template()
@@ -53,6 +55,7 @@ template.add_resource(s3.BucketPolicy(
     }
 ))
 
+
 cdn = template.add_resource(cloudfront.Distribution(
     'WebsiteDistribution',
     DistributionConfig=cloudfront.DistributionConfig(
@@ -71,6 +74,21 @@ cdn = template.add_resource(cloudfront.Distribution(
         DefaultRootObject=Ref(index_page),
         Enabled=True
     )
+))
+
+hosted_zone = Join('', [Ref(domain), '.'])
+template.add_resource(route53.RecordSetGroup(
+    'WebsiteDNSRecord',
+    HostedZoneName=hosted_zone,
+    Comment='Records for the root of the hosted zone',
+    RecordSets=[route53.RecordSet(
+        Name=hosted_zone,
+        Type='A',
+        AliasTarget=route53.AliasTarget(
+            CLOUDFRONT_HOSTED_ZONE_ID,
+            GetAtt(cdn, 'DomainName')
+        )
+    )]
 ))
 
 
