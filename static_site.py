@@ -13,7 +13,7 @@ template = Template()
 domain = template.add_parameter(Parameter(
     'WebsiteDomainName',
     Type=c.STRING,
-    Description='Fully qualified domain name for you website (without www)',
+    Description='A fully qualified domain name for your website (without www)',
 ))
 
 index_page = template.add_parameter(Parameter(
