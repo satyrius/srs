@@ -1,15 +1,21 @@
 {
     "Parameters": {
         "WebsiteDomainName": {
-            "Description": "Fully qualified domain name for you website (without www)",
+            "Default": "subdomain.example.com",
+            "Description": "A fully qualified domain name for your website inside a the hosted zone",
             "Type": "String"
         },
-        "WebsiteErrorPage": {
+        "WebsiteDomainZone": {
+            "Default": "example.com",
+            "Description": "A root hosted zone for your website domain",
+            "Type": "String"
+        },
+        "WebsitePageError": {
             "Default": "error.html",
             "Description": "Error page for your site",
             "Type": "String"
         },
-        "WebsiteIndexPage": {
+        "WebsitePageIndex": {
             "Default": "index.html",
             "Description": "Index page for your site",
             "Type": "String"
@@ -24,10 +30,10 @@
                 },
                 "WebsiteConfiguration": {
                     "ErrorDocument": {
-                        "Ref": "WebsiteErrorPage"
+                        "Ref": "WebsitePageError"
                     },
                     "IndexDocument": {
-                        "Ref": "WebsiteIndexPage"
+                        "Ref": "WebsitePageIndex"
                     }
                 }
             },
@@ -72,7 +78,7 @@
                         "",
                         [
                             {
-                                "Ref": "WebsiteDomainName"
+                                "Ref": "WebsiteDomainZone"
                             },
                             "."
                         ]
@@ -90,15 +96,7 @@
                             "HostedZoneId": "Z2FDTNDATAQYW2"
                         },
                         "Name": {
-                            "Fn::Join": [
-                                "",
-                                [
-                                    {
-                                        "Ref": "WebsiteDomainName"
-                                    },
-                                    "."
-                                ]
-                            ]
+                            "Ref": "WebsiteDomainName"
                         },
                         "Type": "A"
                     }
@@ -125,7 +123,7 @@
                         "ViewerProtocolPolicy": "redirect-to-https"
                     },
                     "DefaultRootObject": {
-                        "Ref": "WebsiteIndexPage"
+                        "Ref": "WebsitePageIndex"
                     },
                     "Enabled": "true",
                     "Origins": [
